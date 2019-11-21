@@ -19,7 +19,7 @@ import concurrent.futures
 def GetFileDict():
     inputfolder = os.getcwd()
     #Generate a dict of image paths inside a folder and its subfolders, filtered by size, and sorted by size/format
-    #Also generate empty images in a temporary directory, linked to a mirrored source folder
+    #Also generate a folder with sorted images hard linked to the originals.
     udict = dict()
     alphamodes = ("RGBA", "LA", "PA", "RGBa", "La")
     time = str(datetime.now().strftime("%m/%d/%Y, %H:%M:%S"))
