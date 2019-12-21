@@ -18,9 +18,8 @@ from data import create_dataloader, create_dataset
 from models import create_model
 from models.modules.LPIPS import compute_dists as lpips
 
-localbackup = "/content/TrainingStates"
-drivebackup = "/content/gdrive/My Drive/TrainingBackup"
-experiments = "/content/BasicSR/experiments"
+drivebackup = "/content/gdrive/My Drive/TrainingBackup/"
+experiments = "/content/BasicSR/experiments/"
 
 def copytree(src, dst, symlinks=False, ignore=None):
   for item in os.listdir(src):
@@ -32,15 +31,19 @@ def copytree(src, dst, symlinks=False, ignore=None):
       shutil.copy2(s, d)
 
 #To keep gdrive from filling up.
+os.makedirs(drivebackup, exist_ok = True)
+os.makedirs(experiments, exist_ok = True)
+files = set(glob.glob(os.path.join(experiments, "**/*.*")))
 def movebackups():
-  print("Backing up...")
-  copytree(drivebackup, localbackup)
-  shutil.rmtree(drivebackup)
-  os.makedirs(drivebackup)
-  copytree(experiments, drivebackup)
-  shutil.rmtree(experiments)
-  os.makedirs(experiments)
-  print("Backed up!")
+    print("Backing up...")
+    allfiles = set(glob.glob(os.path.join(experiments, "**/*.*")))
+    newfiles = allfiles - files
+    shutil.rmtree(drivebackup)
+    os.makedirs(drivebackup, exist_ok = True)
+    for d in newfiles:
+        shutil.copy2(d, drivebackup)
+    newfiles = files
+    print("Backed up!")
 
 def get_pytorch_ver():
     #print(torch.__version__)
