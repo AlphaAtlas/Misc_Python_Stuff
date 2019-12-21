@@ -186,6 +186,7 @@ def main():
                 model.save(current_step)
                 model.save_training_state(epoch + (n >= len(train_loader)), current_step)
                 logger.info('Models and training states saved.')
+                movebackups()
             
             # validation
             if current_step % opt['train']['val_freq'] == 0:
@@ -268,14 +269,14 @@ def main():
                     tb_logger.add_scalar('psnr', avg_psnr, current_step)
                     tb_logger.add_scalar('ssim', avg_ssim, current_step)
                     tb_logger.add_scalar('lpips', avg_lpips, current_step)
-                movebackups()
+                
 
     logger.info('Saving the final model.')
     model.save('latest')
     logger.info('End of training.')
-    os.mkdir("/content/gdrive/My Drive/FinalModel", exist_OK = True)
-    copytree(experiments, "/content/gdrive/My Drive/FinalModel")
-
+    #os.mkdir("/content/gdrive/My Drive/FinalModel", exist_OK = True)
+    movebackups()
+   
 
 if __name__ == '__main__':
     main()
