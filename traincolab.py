@@ -39,7 +39,7 @@ def movebackups():
   os.makedirs(drivebackup)
   copytree(experiments, drivebackup)
   shutil.rmtree(experiments)
-  os.makdirs(experiments)
+  os.makedirs(experiments)
   print("Backed up!")
 
 def get_pytorch_ver():
@@ -56,10 +56,10 @@ def get_pytorch_ver():
         
 def main():
     # options
-    #parser = argparse.ArgumentParser()
-    #parser.add_argument('-opt', type=str, required=True, help='Path to option JSON file.')
-    #opt = option.parse(parser.parse_args().opt, is_train=True)
-    json_directory = "/content/gdrive/My Drive/Avatar/train_test.json" #@param {type:"string"}
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-opt', type=str, required=True, help='Path to option JSON file.')
+    opt = option.parse(parser.parse_args().opt, is_train=True)
+    #json_directory = "/content/gdrive/My Drive/Avatar/train_test.json" #@param {type:"string"}
     opt = option.parse(json_directory, is_train=True)
     opt = option.dict_to_nonedict(opt)  # Convert to NoneDict, which return None for missing key.
     pytorch_ver = get_pytorch_ver()
