@@ -33,10 +33,10 @@ def copytree(src, dst, symlinks=False, ignore=None):
 #To keep gdrive from filling up.
 os.makedirs(drivebackup, exist_ok = True)
 os.makedirs(experiments, exist_ok = True)
-files = set(glob.glob(os.path.join(experiments, "**/*.*")))
+files = set(glob.glob(os.path.join(experiments, "**/*.*"), recursive = True))
 def movebackups():
     print("Backing up...")
-    allfiles = set(glob.glob(os.path.join(experiments, "**/*.*")))
+    allfiles = set(glob.glob(os.path.join(experiments, "**/*.*"), recursive = True))
     newfiles = allfiles - files
     shutil.rmtree(drivebackup)
     os.makedirs(drivebackup, exist_ok = True)
