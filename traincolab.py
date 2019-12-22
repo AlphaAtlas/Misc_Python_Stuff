@@ -31,24 +31,22 @@ def copytree(src, dst, symlinks=False, ignore=None):
       shutil.copy2(s, d)
 
 #Keeps gdrive from filling up, and writes the save state to the json
-os.makedirs(drivebackup, exist_ok = True)
-os.makedirs(experiments, exist_ok = True)
-files = set(glob.glob(os.path.join(experiments, "**/*.*"), recursive = True))
-def movebackups():
+def movebackups(files, jsondir):
     print("Backing up...")
     allfiles = set(glob.glob(os.path.join(experiments, "**/*.*"), recursive = True))
-    newfiles = allfiles - files
+    logs = set(glob.glob(os.path.join(experiments, "**/*.log"), recursive = True))
+    newfiles = (allfiles - files) | logs
     shutil.rmtree(drivebackup)
     os.makedirs(drivebackup, exist_ok = True)
     for d in newfiles:
         dest = os.path.join(drivebackup, d.replace(experiments, ""))
-        os.makedirs(dest, exist_ok = True)
+        os.makedirs(os.path.dirname(dest), exist_ok = True)
         shutil.copy2(d, dest)
 
-    #Try to write .state dir to json
+    #Try to write .state dir to the json
     with open(jsondir, "r") as f:
         contents = f.readlines()
-    for i in xrange(len(contents)):
+    for i in range(len(contents)):
         if "resume_state" in contents[i]:
             rstate = None
             for n in newfiles:
@@ -57,16 +55,16 @@ def movebackups():
                     break
             if rstate is not None:
                 print("writing resume state to json...")
-                contents[i] = r''', "resume_state": "''' + rstate + '"'
+                contents[i] = r''', "resume_state": "''' + rstate + '"\n'
             else:
                 print("No backup state found!")
             break
     with open(jsondir, "w") as f:
         contents = "".join(contents)
         f.write(contents)
-
     files = allfiles
     print("Backed up!")
+    return files
 
 def get_pytorch_ver():
     #print(torch.__version__)
@@ -82,6 +80,9 @@ def get_pytorch_ver():
         
 def main():
     # options
+    os.makedirs(drivebackup, exist_ok = True)
+    os.makedirs(experiments, exist_ok = True)
+    files = set(glob.glob(os.path.join(experiments, "**/*.*"), recursive = True))
     parser = argparse.ArgumentParser()
     parser.add_argument('-opt', type=str, required=True, help='Path to option JSON file.')
     opt = option.parse(parser.parse_args().opt, is_train=True)
@@ -94,7 +95,6 @@ def main():
     # train from scratch OR resume training
     if opt['path']['resume_state']:
         if os.path.isdir(opt['path']['resume_state']):
-            import glob
             resume_state_path = util.sorted_nicely(glob.glob(os.path.normpath(opt['path']['resume_state']) + '/*.state'))[-1]
         else:
             resume_state_path = opt['path']['resume_state']
@@ -210,7 +210,7 @@ def main():
                 model.save(current_step)
                 model.save_training_state(epoch + (n >= len(train_loader)), current_step)
                 logger.info('Models and training states saved.')
-                movebackups()
+                files = movebackups(files, jsondir)
             
             # validation
             if current_step % opt['train']['val_freq'] == 0:
@@ -299,7 +299,7 @@ def main():
     model.save('latest')
     logger.info('End of training.')
     #os.mkdir("/content/gdrive/My Drive/FinalModel", exist_OK = True)
-    movebackups()
+    files = movebackups(files, jsondir)
    
 
 if __name__ == '__main__':
