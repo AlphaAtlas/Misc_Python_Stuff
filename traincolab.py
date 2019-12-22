@@ -41,8 +41,11 @@ def movebackups():
     shutil.rmtree(drivebackup)
     os.makedirs(drivebackup, exist_ok = True)
     for d in newfiles:
-        shutil.copy2(d, drivebackup)
+        dest = os.path.join(drivebackup, d.replace(experiments, ""))
+        os.makedirs(dest, exist_ok = True)
+        shutil.copy2(d, dest)
 
+    #Try to write .state dir to json
     with open(jsondir, "r") as f:
         contents = f.readlines()
     for i in xrange(len(contents)):
