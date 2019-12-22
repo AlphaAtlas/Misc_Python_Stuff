@@ -30,7 +30,7 @@ def copytree(src, dst, symlinks=False, ignore=None):
     else:
       shutil.copy2(s, d)
 
-#To keep gdrive from filling up.
+#Keeps gdrive from filling up, and writes the save state to the json
 os.makedirs(drivebackup, exist_ok = True)
 os.makedirs(experiments, exist_ok = True)
 files = set(glob.glob(os.path.join(experiments, "**/*.*"), recursive = True))
@@ -42,7 +42,27 @@ def movebackups():
     os.makedirs(drivebackup, exist_ok = True)
     for d in newfiles:
         shutil.copy2(d, drivebackup)
-    newfiles = files
+
+    with open(jsondir, "r") as f:
+        contents = f.readlines()
+    for i in xrange(len(contents)):
+        if "resume_state" in contents[i]:
+            rstate = None
+            for n in newfiles:
+                if ".state" in n:
+                    rstate = n
+                    break
+            if rstate is not None:
+                print("writing resume state to json...")
+                contents[i] = r''', "resume_state": "''' + rstate + '"'
+            else:
+                print("No backup state found!")
+            break
+    with open(jsondir, "w") as f:
+        contents = "".join(contents)
+        f.write(contents)
+
+    files = allfiles
     print("Backed up!")
 
 def get_pytorch_ver():
@@ -62,6 +82,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('-opt', type=str, required=True, help='Path to option JSON file.')
     opt = option.parse(parser.parse_args().opt, is_train=True)
+    jsondir = parser.parse_args().opt
     #json_directory = "/content/gdrive/My Drive/Avatar/train_test.json" #@param {type:"string"}
     #opt = option.parse(json_directory, is_train=True)
     opt = option.dict_to_nonedict(opt)  # Convert to NoneDict, which return None for missing key.
