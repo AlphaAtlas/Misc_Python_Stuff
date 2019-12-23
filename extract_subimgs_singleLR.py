@@ -14,7 +14,7 @@ def main():
     save_folder = '/content/data/LOKEP01/LRTiles'
     n_thread = 20
     crop_sz = 64
-    step = 48
+    step = 32
     thres_sz = 64
     compression_level = 0  # 3 is the default value in cv2
     # CV_IMWRITE_PNG_COMPRESSION from 0 to 9. A higher value means a smaller size and longer
