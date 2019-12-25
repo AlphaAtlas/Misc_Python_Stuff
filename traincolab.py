@@ -210,7 +210,7 @@ def main():
                 model.save(current_step)
                 model.save_training_state(epoch + (n >= len(train_loader)), current_step)
                 logger.info('Models and training states saved.')
-                files = movebackups(files, jsondir)
+                #files = movebackups(files, jsondir)
             
             # validation
             if current_step % opt['train']['val_freq'] == 0:
@@ -293,6 +293,7 @@ def main():
                     tb_logger.add_scalar('psnr', avg_psnr, current_step)
                     tb_logger.add_scalar('ssim', avg_ssim, current_step)
                     tb_logger.add_scalar('lpips', avg_lpips, current_step)
+                files = movebackups(files, jsondir)
                 
 
     logger.info('Saving the final model.')
