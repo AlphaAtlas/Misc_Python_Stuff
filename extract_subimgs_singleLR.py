@@ -11,7 +11,7 @@ from utils.progress_bar import ProgressBar
 def main():
     """A multi-thread tool to crop sub imags."""
     input_folder = '/content/data/LOK EP01/LR'
-    save_folder = '/content/data/LOKE P01/LRTiles'
+    save_folder = '/content/data/LOK EP01/LRTiles'
     n_thread = 20
     crop_sz = 64
     step = 32
