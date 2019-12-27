@@ -14,7 +14,7 @@ def main():
     save_folder = '/content/data/LRTiles'
     n_thread = 20
     crop_sz = 64
-    step = 32
+    step = 48
     thres_sz = 16
     compression_level = 1  # 3 is the default value in cv2
     # CV_IMWRITE_PNG_COMPRESSION from 0 to 9. A higher value means a smaller size and longer

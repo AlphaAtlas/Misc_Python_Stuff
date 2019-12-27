@@ -14,7 +14,7 @@ def main():
     save_folder = '/content/data/HRTiles'
     n_thread = 20
     crop_sz = 128
-    step = 64
+    step = 96
     thres_sz = 32
     compression_level = 1  # 3 is the default value in cv2
     # CV_IMWRITE_PNG_COMPRESSION from 0 to 9. A higher value means a smaller size and longer
