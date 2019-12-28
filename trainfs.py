@@ -55,7 +55,7 @@ def movebackups(files, jsondir):
                     break
             if rstate is not None:
                 print("writing resume state to json...")
-                contents[i] = r''', "resume_state": "''' + rstate + '"\n'
+                contents[i] = r'''  resume_state: ''' + rstate + '"\n'
             else:
                 print("No backup state found!")
             break
