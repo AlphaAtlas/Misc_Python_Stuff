@@ -80,6 +80,7 @@ def worker(path, save_folder, crop_sz, step, thres_sz, compression_level):
             cv2.imwrite(
                 os.path.join(save_folder, img_name.replace('.png', '_s{:03d}.png'.format(index))),
                 crop_img, [cv2.IMWRITE_PNG_COMPRESSION, compression_level])
+    os.remove(path)
     return 'Processing {:s} ...'.format(img_name)
 
 
