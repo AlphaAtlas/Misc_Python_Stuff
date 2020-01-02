@@ -32,16 +32,15 @@ def main():
         path = [os.path.join(root, x) for x in file_list]  # assume only images in the input_folder
         img_list.extend(path)
 
-    def update(arg):
-        pbar.update(arg)
+    #def update(arg):
+    #    pbar.update(arg)
 
     pbar = ProgressBar(len(img_list))
 
     pool = Pool(n_thread)
     for path in img_list:
         pool.apply_async(worker,
-            args=(path, save_folder, crop_sz, step, thres_sz, compression_level),
-            callback=update)
+            args=(path, save_folder, crop_sz, step, thres_sz, compression_level))
     pool.close()
     pool.join()
     print('All subprocesses done.')
